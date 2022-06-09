@@ -1,3 +1,5 @@
+import 'package:survey/domain/helpers/domain_error.dart';
+
 import '../../domain/entities/account_entity.dart';
 import '../../domain/usecases/usecases.dart';
 import '../http/http.dart';
@@ -10,11 +12,15 @@ class RemoteAuthentication implements Authentication {
 
   @override
   Future<void> auth(AuthenticationParams params) async {
-    await httpClient.request(
-      url: url,
-      method: 'method',
-      bory: RemoteAuthenticationParams.fromDomain(params).toJson(),
-    );
+    try {
+      await httpClient.request(
+        url: url,
+        method: 'method',
+        bory: RemoteAuthenticationParams.fromDomain(params).toJson(),
+      );
+    } on HttpError {
+      throw DomainError.unexpected;
+    }
   }
 }
 
